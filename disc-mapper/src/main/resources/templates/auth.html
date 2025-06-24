@@ -1,0 +1,44 @@
+<div th:replace="~{fragments/header}" xmlns:th="http://www.w3.org/1999/xhtml"></div>
+<main class="main-content">
+    <section class="main-section">
+        <div class="center-crop txt-center col-6">
+            <h4 th:text="${page_name}" style="margin-bottom: 3px;"></h4>
+            <hr>
+            <pre class="txt-center" style="color: red; font-size: 14px; font-weight: bold;" th:text="${message}"></pre>
+            <form method="post" onsubmit="return validateForm(this);"
+                  th:action="@{/user/login/{username}/auth(username=${userName})}" th:object="${authToken}">
+                <div class="row">
+                    <div class="col-12" style="text-align: center;">
+                        <br>
+                        <label>Enter key: </label>
+                        <input type="text" th:field="*{token}" name="token" class="input" required>
+                        <br>
+                    </div>
+                    <div class="txt-center col-12 mt-4">
+                        <input type="submit" id="authKeyButton" value="Authenticate" disabled>
+                    </div>
+                </div>
+
+                <div class="mb-2 mt-2 txt-center">
+                    <br>
+                    <div>
+                        <p style="color: rgb(99, 96, 96);">Time remaining: <span id="authTimer"
+                                                                                 th:text="${timerInitial}"></span></p>
+                    </div>
+                </div>
+            </form>
+        </div>
+        </div>
+
+    </section>
+
+    <script th:inline="javascript">
+        const remainingSeconds = [[${timerInitial}]];
+
+        document.addEventListener('DOMContentLoaded', function() {
+          startTimer(remainingSeconds);
+        });
+    </script>
+
+</main>
+<div th:replace="~{fragments/footer}"></div>

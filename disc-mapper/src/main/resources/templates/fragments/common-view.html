@@ -1,0 +1,68 @@
+<div class="search-results container my-4">
+    <div th:if="${totalResults != 0 and success}" class="results-container">
+        <div th:fragment="results-container-fragment" id="results-container">
+            <div th:if="${isFileSearch}" class="file-list">
+                <div th:each="file : ${fileResults}" class="list-item file-item">
+                    <div class="item-icon">
+                        <i th:class="${file.isDirectory} ? 'fas fa-folder' : 'fas fa-file'"></i>
+                    </div>
+                    <div class="item-details">
+                        <a style="text-decoration: none;"
+                           th:href="@{'/drive/' + ${file.drive.id} + '?fileId=' + ${file.id}}">
+                            <div class="item-title" th:text="${file.fileName}">File Name</div>
+                            <div class="item-subtitle">
+                                <span th:text="${file.drive.driveName}">Drive Name</span>
+                                <span class="item-meta" style="float: right;"
+                                      th:text="${file.lastModified} ? ${#temporals.format(file.lastModified, 'dd.MM.yyyy HH:mm')} : 'N/A'">
+                  Modified Date</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${!isFileSearch}" class="device-list">
+                <div th:each="device : ${fileResults}" class="list-item device-item">
+                    <div class="item-icon">
+                        <i th:class="${device.isPC} ? 'fas fa-laptop' : 'fas fa-hdd'"></i>
+                    </div>
+                    <div class="item-details">
+                        <a style="text-decoration: none;"
+                           th:href="@{${device.isPC} ? '/device/' + ${device.devId} : '/drive/' + ${device.devId}}">
+                            <div class="item-title" th:text="${device.name}">Device Name</div>
+                            <div class="item-subtitle">
+                                <span th:text="${device.forDevice}">Device Model</span>
+                                <span class="item-meta" th:text="${device.info}" style="float: right;">Status</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="loadingSpinner" class="loading-spinner" style="display: none;">
+            <div class="spinner"></div>
+            <p>Loading more results...</p>
+        </div>
+    </div>
+
+    <div th:if="${totalResults != 0}">
+        <div th:if="${hasMore}"
+             th:data-current-loaded="${currentLoaded}"
+             th:data-total-results="${totalResults}"
+             th:data-size="${size}"
+             class="text-center my-4">
+            <button class="btn btn-outline-primary" id="loadMoreBtn">
+                Load More Results
+                <i class="fas fa-chevron-down ms-2"></i>
+            </button>
+        </div>
+    </div>
+</div>
+<div th:if="${totalResults == 0 or !success}" class="no-results text-center py-5">
+    <div class="alert alert-light">
+        <i class="fas fa-search fa-3x mb-3 text-muted"></i>
+        <h4>No Results Found</h4>
+        <p class="mb-0">Try adjusting your search term or filters.</p>
+    </div>
+</div>

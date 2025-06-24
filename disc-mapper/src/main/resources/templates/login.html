@@ -1,0 +1,134 @@
+<div th:replace="~{fragments/header}" xmlns:th="http://www.w3.org/1999/xhtml"></div>
+<main class="main-content" style="padding-top: 100px !important;">
+    <section class="main-section">
+        <div class="center-crop txt-center col-6">
+            <h4 th:text="${page_name}" style="margin-bottom: 3px;"></h4>
+            <hr>
+            <pre class="txt-center" style="color: red; font-size: 14px; font-weight: bold;" th:text="${message}"></pre>
+            <form name="formSubmit" method="post" onsubmit="return validateForm(this);"
+                  th:action="${mode} == 'recovery' ? @{/user/recovery} : @{/user/login}" th:object="${resetToken}">
+                <div class="row">
+                    <div class="col-12" style="text-align: center;">
+                        <br>
+                        <label>Username: </label>
+                        <input type="text" name="username" class="input" th:if="${mode} != 'recovery'" required>
+                        <input type="text" th:field="*{username}" name="username" class="input"
+                               th:unless="${mode} != 'recovery'" required>
+                        <br>
+                        <div class="hidden-container" th:if="${mode} != 'recovery'">
+                            <label>Password: </label>
+                            <div class="hidden-container col-12">
+                                <input type="password" id="loginPassword" name="password" class="input" required>
+                                <span class="hidden-icon" onmousedown="togglePasswordVisibility('loginPassword');"
+                                      onmouseup="togglePasswordVisibility('loginPassword');">
+                                <img th:src="@{/icons/hidden.png}" alt="Visible" title="Make Visible"></span> <br>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="txt-center col-12 mt-4">
+                        <input type="submit" name="loginBtn" th:value="${mode} == 'recovery' ? 'Send Code' : 'Sign In'">
+                    </div>
+                </div>
+
+                <div class="txt-center">
+                    <br>
+                    <div id="showModal" class="mb-2 mt-3 mt-md-3 modal-open btn-cta border-0 form-link"
+                         th:if="${mode} != 'recovery'">
+                        <span style="color: rgb(99, 96, 96);">Don't have an account? <a class="forgot-pass pointer">Sign Up</a></span>
+                    </div>
+                    <div class="mb-2 mt-md-3 modal-open btn-cta border-0 form-link">
+                        <a th:href="@{/user/login(mode=${mode} == 'recovery' ? 'login' : 'recovery')}">
+                            <span th:text="${mode} == 'recovery' ? 'Back to Login' : 'Forgot Password?'"></span>
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </section>
+
+
+    <!-- Modal Window -->
+    <div id="myModal" class="modal">
+        <button class="close-mk search-btn" id="closeModal">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="modal-content full-sc">
+            <div class="container">
+                <div id="modalFormSubmit" class="lesser-center-crop">
+                    <div class="text-center" style="margin-top: 60px;">
+                        <h3 class="mt-3 mb-2">Create Profile</h3>
+                        <hr>
+                        <pre class="txt-center" style="color: red; font-size: 14px; font-weight: bold;"></pre>
+                    </div>
+                    <form name="registrationForm" method="post" onsubmit="return validateForm(this);"
+                          th:action="@{/user/register}" th:object="${users_creator}">
+                        <div class="row">
+                            <div class="col-12 col-md-6 col-lg-6">
+                                <div style="float: right;">
+                                    <br>
+                                    <label>Full Name: </label>
+                                    <input type="text" th:field="*{fullName}" name="fullName" placeholder="Full Name"
+                                           class="input" required>
+                                    <br>
+                                    <div class="hidden-container">
+                                        <label>Username: </label>
+                                        <div class="hidden-container col-12">
+                                            <input type="text" th:field="*{username}" name="username"
+                                                   placeholder="Username" class="input" required>
+                                            <span id="username-status" class="hidden-icon"
+                                                  style="margin-left: 5px; font-weight: bold;"></span>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <label>Email: </label>
+                                    <input type="text" th:field="*{email}" name="email" placeholder="Email"
+                                           class="input">
+                                    <br>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6 col-lg-6">
+                                <br>
+                                <div class="hidden-container">
+                                    <label>Password: </label>
+                                    <div class="hidden-container col-12">
+                                        <input type="password" th:field="*{password}" name="password" class="input"
+                                               id="check_pass"
+                                               placeholder="Must contain uppercase, lowercase & min 8 symbols" required>
+                                        <span class="hidden-icon" onmousedown="togglePasswordVisibility('check_pass');"
+                                              onmouseup="togglePasswordVisibility('check_pass');">
+                                        <img th:src="@{/icons/hidden.png}" alt="Visible" title="Make Visible"></span>
+                                        <br>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="hidden-container">
+                                    <label>Re-type Password: </label>
+                                    <div class="hidden-container col-12">
+                                        <input type="password" th:field="*{reTypePassword}" name="reTypePassword"
+                                               class="input"
+                                               placeholder="Retype your Password" id="retype_pass" required>
+                                        <span class="hidden-icon" onmousedown="togglePasswordVisibility('retype_pass');"
+                                              onmouseup="togglePasswordVisibility('retype_pass');">
+                                        <img th:src="@{/icons/hidden.png}" alt="Visible" title="Make Visible"></span>
+                                        <br>
+                                    </div>
+                                </div>
+                                <br>
+                            </div>
+
+                            <div class="col-12 margin-null">
+                                <div class="txt-right col-12 mt-3 mb-4" style="text-align: center;">
+                                    <input type="submit" name="submitReg"
+                                           value="Sign Up">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+<div th:replace="~{fragments/footer}"></div>

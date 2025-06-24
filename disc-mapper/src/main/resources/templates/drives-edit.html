@@ -1,0 +1,39 @@
+<div th:replace="~{fragments/header}" xmlns:th="http://www.w3.org/1999/xhtml"></div>
+<main class="main-content">
+    <section class="main-section" style="margin-top: 20px; margin-bottom: 20px;">
+        <div class="container row justify-content-center align-items-center center-crop txt-center col-10">
+            <div class="col-2">
+                <a th:href="${pc_link}" style="text-decoration: none;">
+                    <button type="button" style="background: none; border: none; cursor: pointer;">
+                        <i class="fas fa-chevron-left" style="font-size: 24px; vertical-align: middle;" alt="Back"></i>
+                    </button>
+                </a>
+            </div>
+            <h4 th:text="${page_name}" class="col-10" style="margin-bottom: 3px; padding-right: 12vw;"></h4>
+            <hr>
+
+            <form th:action="@{/drive/{id}/edit/update(id=${drive_id})}" id="drive-update-cont" method="post" th:object="${objDrive}">
+                <div class="col-12" style="text-align: center;">
+                    <label>PC Model: </label>
+                    <span style="width: 274px; height: 40px;" th:text="*{pcs?.pcModel} ?: 'No PC assigned'"></span>
+                    <br>
+                    <label>Drive Name: </label>
+                    <input type="text" id="driveName" class="input" th:field="*{driveName}">
+                    <br>
+                    <div th:if="${externalDrive == false}" name="selectPcCont">
+                        <label>Selected PC: </label>
+                        <select class="input" id="pcsDropdown" name="selectedPc" th:field="*{pcs}" required>
+                            <option value="" selected></option>
+                            <option th:each="pcs : ${pcs_opt}" th:text="${pcs.value}" th:value="${pcs.key}"></option>
+                        </select>
+                    </div>
+                    <br>
+                </div>
+                <div class="txt-center col-12 mt-4">
+                    <input type="submit" value="Update Drive">
+                </div>
+            </form>
+        </div>
+    </section>
+</main>
+<div th:replace="~{fragments/footer}"></div>

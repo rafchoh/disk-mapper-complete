@@ -1,0 +1,46 @@
+<div th:replace="fragments/header" xmlns:th="http://www.w3.org/1999/xhtml"></div>
+<main class="main-content">
+    <section class="main-section">
+        <div class="container row justify-content-center align-items-center center-crop txt-center col-10">
+            <div class="col-2">
+                <a th:href="${pc_link}" style="text-decoration: none;">
+                    <button type="button" style="background: none; border: none; cursor: pointer;">
+                        <i class="fas fa-chevron-left" style="font-size: 24px; vertical-align: middle;" alt="Back"></i>
+                    </button>
+                </a>
+            </div>
+            <h4 th:text="${page_name}" class="col-10" style="margin-bottom: 3px; padding-right: 12vw;"></h4>
+            <hr>
+
+            <form th:action="@{/device/{id}/edit/update(id=${pc_id})}" method="post" th:object="${objPc}">
+                <div class="row">
+                    <div class="col-12" style="text-align: center;">
+                        <label>PC Model: </label>
+                        <span style="width: 274px; height: 40px;" th:text="*{pcModel}"></span>
+                        <br>
+                        <label>PC Name: </label>
+                        <input type="text" id="pcNameField" class="input" th:field="*{pcName}">
+                        <br>
+                        <label>PC Info: </label>
+                        <input type="text" th:field="*{pcInfo}" class="input">
+                        <br>
+                    </div>
+                    <div class="txt-center col-12 mt-4">
+                        <input type="submit" value="Update PC" onclick="loadValue()">
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </section>
+
+    <script th:inline="javascript">
+        function loadValue() {
+          var pcName = [[${message}]];
+          if (pcName) {
+            confirm(pcName);
+          }
+        }
+    </script>
+</main>
+<div th:replace="fragments/footer"></div>

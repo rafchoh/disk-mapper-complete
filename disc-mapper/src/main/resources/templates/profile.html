@@ -1,0 +1,75 @@
+<div th:replace="~{fragments/header}" xmlns:th="http://www.w3.org/1999/xhtml"></div>
+<main class="main-content">
+    <section class="main-section">
+        <div class="container txt-center col-10">
+            <div class="text-center">
+                <h4 style="margin-bottom: 3px;" th:text="${page_name}"></h4>
+                <hr>
+                <div class="row justify-content-center">
+                    <div class="col-12 col-md-4 col-lg-4 mb-3 display-center">
+                        <form th:action="@{/user/profile/{id}/delete(id=${userId})}" method="post" onsubmit="snClearAll()">
+                            <button type="submit"
+                                    onclick="return confirm('Are you sure you want to delete your profile?');"
+                                    class="btn btn-delete-custom">Delete
+                            </button>
+                        </form>
+                    </div>
+                    <div class="col-12 col-md-4 col-lg-4 mb-3 display-center">
+                        <a th:href="@{'/user/profile/' + ${authUsername} + '/pass-edit'}"
+                           style="padding: 8px 16px; background-color: black; color: white; border: none;
+                              border-radius: 4px; text-decoration: none; display: inline-block; cursor: pointer;"
+                           class="forgot-pass pointer">Change password</a>
+                    </div>
+                    <div class="col-12 col-md-4 col-lg-4 mb-3 display-center">
+                        <form th:action="@{/logout}" method="post" onsubmit="snClearAll()" class="d-inline">
+                            <input type="submit" value="Logout" onclick="snClearAll()">
+                        </form>
+                    </div>
+                </div>
+                <pre class="txt-center" style="color: red; font-size: 14px; font-weight: bold;"
+                     th:text="${message}"></pre>
+                <hr>
+            </div>
+            <form method="post" onsubmit="return validateForm(this);"
+                  th:action="@{/user/profile/info-update}" th:object="${objUser}">
+                <div class="row">
+                    <div class="col-12">
+                        <div style="text-align: center;">
+                            <br>
+                            <label>Username: </label>
+                            <input type="text" th:field="*{username}" name="username" class="input" disabled>
+                            <br>
+                            <label>Full Name: </label>
+                            <input type="text" th:field="*{fullName}" name="fullName" class="input" required>
+                            <br>
+                            <label>Email: </label>
+                            <input type="text" th:field="*{email}" name="email" placeholder="Email" class="input">
+                            <br>
+                            <div class="hidden-container">
+                                <label>Password: </label>
+                                <div class="hidden-container col-12">
+                                    <input type="password" th:field="*{password}" class="input" id="check_pass"
+                                           placeholder="Enter current password!" name="password" required>
+                                    <span class="hidden-icon" onmousedown="togglePasswordVisibility('check_pass');"
+                                          onmouseup="togglePasswordVisibility('check_pass');">
+                                        <img th:src="@{/icons/hidden.png}" alt="Visible"
+                                             title="Make Visible"></span><br>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 margin-null">
+                        <div class="txt-right col-12 mt-3 mb-4" style="text-align: center;">
+                            <input type="submit" name="submitReg"
+                                   value="Edit User">
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="txt-center">
+                <div class="mb-2 mt-3  mt-md-3 modal-open btn-cta border-0 form-link"></div>
+            </div>
+        </div>
+    </section>
+</main>
+<div th:replace="~{fragments/footer}"></div>

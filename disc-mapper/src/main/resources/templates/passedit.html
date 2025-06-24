@@ -1,0 +1,74 @@
+<div th:replace="~{fragments/header}" xmlns:th="http://www.w3.org/1999/xhtml"></div>
+<main class="main-content">
+    <section class="main-section">
+        <div class="container">
+            <div class="center-crop txt-center col-6">
+                <div class="text-center">
+                    <h4 th:text="${page_name}" style="margin-bottom: 3px;"></h4>
+                    <hr>
+                    <pre class="txt-center" style="color: red; font-size: 14px; font-weight: bold;"
+                         th:text="${message}"></pre>
+                    <form method="post" onsubmit="return validateForm(this);" th:object="${objPassUser}"
+                          th:action="@{/user/profile/{username}/pass-update(username=${authUsername})}">
+                        <div class="row">
+                            <div class="col-12" style="text-align: center;">
+                                <div class="hidden-container col-12" th:if="${profileEdit}">
+                                    <br>
+                                    <label>Old Password: </label>
+                                    <div class="hidden-container mb-3">
+                                        <input type="password" th:field="*{password}" class="input" id="old_pass"
+                                               placeholder="Enter current password!" name="passwords" required>
+                                        <span id="toggleHidden" class="hidden-icon"
+                                              onmousedown="togglePasswordVisibility('old_pass');"
+                                              onmouseup="togglePasswordVisibility('old_pass');">
+                                        <img th:src="@{/icons/hidden.png}" alt="Visible" title="Make Visible"></span>
+                                    </div>
+                                </div>
+                                <br>
+                                <div>
+                                    <div class="hidden-container col-12 mb-3">
+                                        <label> New Password: </label>
+                                        <div class="hidden-container">
+                                            <input type="password" th:field="*{newPassword}" name="newPassword"
+                                                   class="input"
+                                                   placeholder="Must have upper-, lowercase & min 8 symbols"
+                                                   id="new_pass" required>
+                                            <span id="toggleHidden" class="hidden-icon"
+                                                  onmousedown="togglePasswordVisibility('new_pass');"
+                                                  onmouseup="togglePasswordVisibility('new_pass');">
+                                            <img th:src="@{/icons/hidden.png}" alt="Visible"
+                                                 title="Make Visible"></span>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="hidden-container col-12">
+                                        <label>Re-type New Password: </label>
+                                        <div class="hidden-container">
+                                            <input type="password" th:field="*{reTypePassword}" name="reTypePassword"
+                                                   class="input"
+                                                   placeholder="Retype your New Password" id="retype_pass0" required>
+                                            <span id="toggleHidden" class="hidden-icon"
+                                                  onmousedown="togglePasswordVisibility('retype_pass0');"
+                                                  onmouseup="togglePasswordVisibility('retype_pass0');">
+                                            <img th:src="@{/icons/hidden.png}" alt="Visible"
+                                                 title="Make Visible"></span>
+                                        </div>
+                                    </div>
+                                    <br>
+                                </div>
+                            </div>
+
+                            <div class="col-12 margin-null">
+                                <div class="txt-right col-12 mt-3 mb-5" style="text-align: center;">
+                                    <input type="submit" name="submitReg"
+                                           value="Change Password">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+<div th:replace="~{fragments/footer}"></div>

@@ -1,0 +1,57 @@
+<div th:replace="~{fragments/header}" xmlns:th="http://www.w3.org/1999/xhtml"></div>
+<main class="main-content">
+    <section class="main-section">
+        <div class="center-crop txt-center col-10">
+            <h4 th:text="${page_name}" style="margin-bottom: 3px;"></h4>
+            <hr>
+            <pre class="txt-center" style="color: red; font-size: 14px; font-weight: bold;" th:text="${message}"></pre>
+            <form name="mapForm" th:action="@{/drive/create}" method="post" th:object="${drive_mapper}">
+                <div class="row">
+                    <div class="col-12" style="text-align: center;">
+                        <label>Name your Drive: </label>
+                        <input type="text" id="driveName" class="input" th:field="*{driveName}">
+                        <br>
+                        <label>Select a Drive: </label>
+                        <select class="input" id="drivesDropdown" name="selectedDrive" th:field="*{drivePath}" required>
+                            <option value="" selected></option>
+                            <option th:each="drive : ${drive_opt}" th:value="${#strings.substringBefore(drive, ' ')}"
+                                    th:text="${drive}"></option>
+                        </select>
+                        <br>
+                        <div name="selectPcCont">
+                            <label>Select a PC: </label>
+                            <select class="input" id="pcsDropdown" name="selectedPc" th:field="*{pcs}" required>
+                                <option value="" text="Info / PC Name" selected></option>
+                                <option th:each="pcs : ${pcs_opt}" th:text="${pcs.value}"
+                                        th:value="${pcs.key}"></option>
+                            </select> <br>
+                        </div>
+                        <input type="checkbox" th:field="*{isExternal}" class="mt-3"> Is External Drive
+                        <br>
+                    </div>
+                    <div class="txt-center col-12 mt-4">
+                        <input type="submit" value="Map Drive" id="mapDrive">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+</main>
+
+<script th:inline="javascript">
+    function loadValue() {
+        let userId = [[${user_id} ?: 'null']];
+        let select = document.getElementById("pcsDropdown");
+
+        Array.from(select.options).forEach(option => {
+            if (option.value === userId.toString()) {
+                option.selected = true;
+            }
+        });
+    }
+
+    window.addEventListener('DOMContentLoaded', (event) => {
+        loadValue();
+    });
+</script>
+<div th:replace="~{fragments/footer}"></div>

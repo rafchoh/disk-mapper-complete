@@ -1,0 +1,36 @@
+<div th:fragment="folderTemplate(currentPath, allFiles, level)" class="folder" th:classappend="'level-' + ${level}">
+    <div th:id="${(level != 0) ? '№' + folder.id : currentPath}"
+         class="folder-header"
+         onclick="toggleFolder(this)">
+        <span class="toggle-icon">▼</span>
+        <span class="folder-icon">📁</span>
+        <span th:text="${(level != 0) ? currentPath.substring(currentPath.lastIndexOf('\') + 1) : currentPath}"></span>
+    </div>
+    <div class="folder-content">
+        <div th:each="file : ${allFiles.get(currentPath)}"
+             th:if="${file != null and !file.directory}"
+             th:id="'№' + ${file.id}"
+             class="file-item">
+            <span class="file-icon">📄</span>
+            <span th:text="${file.fileName}"
+                  class="file-item-name">
+                </span>
+            <span th:text="${#temporals.format(file.lastModified, 'dd.MM.yyyy HH:mm')}"
+                  class="file-modified">
+                </span>
+        </div>
+        <div th:each="folder : ${allFiles.get(currentPath)}"
+             th:if="${folder != null and folder.directory}">
+            <div th:if="${allFiles.containsKey(folder.filePath)}">
+                <div th:replace="~{:: folderTemplate(${folder.filePath}, ${allFiles}, ${level + 1})}"></div>
+            </div>
+            <div th:unless="${allFiles.containsKey(folder.filePath)}"
+                 class="folder" th:classappend="'level-' + ${level + 1}">
+                <div class="folder-header" th:id="'№' + ${folder.id}">
+                    <span class="folder-icon">📁</span>
+                    <span th:text="${folder.fileName}"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

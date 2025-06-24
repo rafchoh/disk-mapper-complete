@@ -1,0 +1,37 @@
+<div th:replace="~{fragments/header}" xmlns:th="http://www.w3.org/1999/xhtml"></div>
+<main class="main-content">
+    <section class="main-section" style="margin-top: 20px; margin-bottom: 20px;">
+        <div class="container center-crop txt-center col-10">
+            <h4 th:text="${page_name}" style="margin-bottom: 3px;"></h4>
+            <hr>
+            <pre class="txt-center mt-2" style="color: red; font-size: 14px; font-weight: bold;"
+                 th:text="${message}"></pre>
+            <hr>
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                <div class="col-10 col-md-6 col-lg-4 mx-auto" th:each="card : ${cards}">
+                    <a th:href="@{${card.isExternal} ? '/drive/' + ${card.devId} : '/device/' + ${card.devId}}"
+                       class="text-decoration-none text-dark">
+                        <div class="card h-100">
+                            <img th:src="@{${card.isExternal} ? '/icons/drive-ic.png' : '/icons/device-ic.png'}"
+                                 class="card-img-top mx-auto d-block"
+                                 th:style="@{${card.isExternal} ? 'width: 65%; margin-top: 10px;' : 'width: 75%;'}"
+                                 alt="image">
+                            <div class="card-body">
+                                <pre th:text="${card.isExternal} ? 'External Drive' : ${card.forDevice}"
+                                     style="white-space: pre-wrap; word-wrap: break-word; max-width: 100%;"></pre>
+                                <h5 class="card-title" th:text="${card.name}"></h5>
+                                <p class="card-text" th:text="${card.info}"></p>
+                            </div>
+                            <div class="card-footer">
+                                <small class="text-muted">
+                                    <pre th:text="${card.devAdded}"></pre>
+                                </small>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+<div th:replace="~{fragments/footer}"></div>

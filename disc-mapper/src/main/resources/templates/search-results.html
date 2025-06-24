@@ -1,0 +1,19 @@
+<div th:replace="~{fragments/header}" xmlns:th="http://www.w3.org/1999/xhtml"></div>
+<main class="main-content">
+    <section class="main-section" style="margin-top: 20px; margin-bottom: 20px;">
+        <div class="container center-crop col-10">
+            <div class="row txt-center mb-3">
+                <div class="col-10 mx-auto">
+                    <h3>Search Results for "<span th:text="${searchTerm}"></span>"</h3>
+                    <p class="text-muted">
+                        Loaded <span id="statusText" style="text-decoration-line: underline;"
+                                     th:text="${currentLoaded}"></span>
+                        of <span style="text-decoration-line: underline;" th:text="${totalResults}"></span>
+                    </p>
+                </div>
+            </div>
+            <div th:replace="~{fragments/common-view}"></div>
+        </div>
+    </section>
+</main>
+<div th:replace="~{fragments/footer}"></div>

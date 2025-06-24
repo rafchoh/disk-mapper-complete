@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!--        <meta name="_csrf" content="${_csrf.token}"/>-->
+<!--        <meta name="_csrf_header" content="${_csrf.headerName}"/>-->
+        <title>Drive Control</title>
+        <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+        <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        <title th:text="${page_name}"></title>
+        <base th:href="@{/templates/home.html}">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    </head>
+    <body>
+        <div id="modal-background" class="modal-background" style="display: none;"></div>
+        <div id="searchSidebar" class="search-sidebar">
+            <div class="search-sidebar-header">
+                <h4 style="text-transform: uppercase;">Search</h4>
+                <button class="close-search" id="closeSearch">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div>
+                <hr>
+                <form class="search-form" th:action="@{/search/fetch}" method="post">
+                    <input type="text"
+                           class="search-input"
+                           placeholder="Search for PCs, drives, or models..."
+                           name="searchTerm"
+                           th:value="${param.searchTerm != null ? param.searchTerm[0] : ''}">
+                    <hr>
+                    <div class="filter-group">
+                        <label style="text-transform: uppercase;">Search In</label>
+                        <div class="radio-button-group row">
+                            <div class="radio-option col-4" style="padding-right: 0;">
+                                <input type="radio" id="pc-search" name="searchType" value="PCs"
+                                       th:checked="${param.searchType == null or param.searchType[0] == 'PCs'}">
+                                <label for="pc-search" class="radio-label">PCs</label>
+                            </div>
+                            <div class="radio-option col-4" style="padding-left: 0; padding-right: 0;">
+                                <input type="radio" id="drive-search" name="searchType" value="Drives"
+                                       th:checked="${param.searchType != null and param.searchType[0] == 'Drives'}">
+                                <label for="drive-search" class="radio-label">Drives</label>
+                            </div>
+                            <div class="radio-option col-4" style="padding-left: 0;">
+                                <input type="radio" id="files-search" name="searchType" value="DriveFiles"
+                                       th:checked="${param.searchType != null and param.searchType[0] == 'DriveFiles'}">
+                                <label for="files-search" class="radio-label">Files</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="row align-items-center">
+                            <h5 class="col-6" style="text-transform: uppercase;">Filters:</h5>
+                            <label th:if="${drive_id_s != null}" class="col-6" style="font-weight: lighter;"
+                                   id="currentDriveCheck">
+                                <input type="hidden" id="currentDriveId" name="currentDriveId" th:value="${drive_id_s}">
+                                <input type="checkbox" id="currentDrive" name="currentDrive"> In Current Drive
+                            </label>
+                            <br>
+                        </div>
+                        <div class="search-filters">
+                            <div class="filter-group" id="driveTypeDiv">
+                                <label for="isExternal">Drive Type</label>
+                                <select class="filter-select" id="isExternal" name="isExternal">
+                                    <option value="">All</option>
+                                    <option value="true"
+                                            th:selected="${param.isExternal != null and param.isExternal[0] == 'true'}">
+                                        External
+                                    </option>
+                                    <option value="false"
+                                            th:selected="${param.isExternal != null and param.isExternal[0] == 'false'}">
+                                        Built in
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="filter-group" id="folderTypeDiv">
+                                <label for="isDirectory">File Type</label>
+                                <select class="filter-select" id="isDirectory" name="isDirectory">
+                                    <option value="">All</option>
+                                    <option value="false"
+                                            th:selected="${param.isDirectory != null and param.isDirectory[0] == 'false'}">
+                                        Files
+                                    </option>
+                                    <option value="true"
+                                            th:selected="${param.isDirectory != null and param.isDirectory[0] == 'true'}">
+                                        Folders
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="filter-group" id="dateTypeDiv">
+                                <label>By Date</label>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label class="date-label" for="startDate">From:</label>
+                                        <div class="date-input">
+                                            <input type="datetime-local"
+                                                   id="startDate"
+                                                   name="startDate"
+                                                   th:value="${param.startDate != null ? param.startDate[0] : ''}">
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="date-label" for="endDate">To:</label>
+                                        <div class="date-input">
+                                            <input type="datetime-local"
+                                                   id="endDate"
+                                                   name="endDate"
+                                                   th:value="${param.endDate != null ? param.endDate[0] : ''}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 mt-3">
+                        <i class="fas fa-search me-2"></i>Search
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <header id="header" class="site-header header-scrolled position-fixed text-black bg-light">
+            <nav id="header-nav" class="navbar navbar-expand-lg px-3 text-center">
+                <div class="container-fluid">
+                    <div th:class="${#authorization.expression('isAnonymous()')} ? 'hide-exclusion' : ''">
+                        <button id="searchBtn" class="search-btn" sec:authorize="isAuthenticated()">
+                            <img class="img-icon" th:src="@{/icons/search.png}" alt="Search">
+                        </button>
+                    </div>
+                    <div th:class="${#authorization.expression('isAnonymous()')} ? 'offcanvas-body' : 'offcanvas-body nav-opts'">
+                        <ul class="navbar-nav text-uppercase justify-content-end align-items-center flex-grow-1">
+                            <li class="nav-item" sec:authorize="isAuthenticated()">
+                                <ul class="list-unstyled d-flex mb-0">
+                                    <li class="nav-item">
+                                        <a class="nav-link navbar-hover" th:href="@{/}">Home</a>
+                                    </li>
+                                    <li class="dropdown nav-item" style="text-align: center;">
+                                        <a class="nav-link ms-1 navbar-hover">Add New ▼</a>
+                                        <div class="dropdown-content">
+                                            <a class="nav-link ms-1 navbar-hover" th:href="@{/device/add}">PC</a>
+                                            <a class="nav-link ms-1 navbar-hover" th:href="@{/drive/add}">Drive</a>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="nav-item" style="text-align: center;" sec:authorize="isAnonymous()">
+                                <a class="nav-link ms-1 navbar-hover" th:href="@{/user/login}">Login</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div th:class="${#authorization.expression('isAnonymous()')} ? 'hide-exclusion' : 'show-exclusion'">
+                        <div class="user-btn" sec:authorize="isAuthenticated()">
+                            <a th:href="@{/user/profile}">
+                                <img th:src="@{/icons/user-avatar.png}" alt="Edit User">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </header>

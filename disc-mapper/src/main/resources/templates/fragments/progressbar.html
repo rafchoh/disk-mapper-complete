@@ -1,0 +1,33 @@
+<div id="progressModal" xmlns:th="http://www.w3.org/1999/xhtml">
+    <button id="closeProgressModal">&times;</button>
+    <div id="progressInfo">
+        <div class="progress-header">
+            <h5>File Import...</h5>
+            <div style="margin-right: 3vw; margin-bottom: 10px;">
+                <img src="/icons/stop-ic.png" id="stopImportIcon"
+                     style="cursor: pointer; width: 18px; height: 18px; display: none;" alt="Stop Import">
+            </div>
+        </div>
+        <div class="row justify-content-center align-items-center">
+            <div class="col-10" style="background: #eee; border-radius: 20px; height: 10px; overflow: hidden; padding: 0">
+                <div id="bar"></div>
+            </div>
+            <p class="col-1" style="font-size:13px;" id="percent">0%</p>
+        </div>
+        <p id="statusMessage" style="font-size:13px; margin-top: 10px;" th:text="${message_pb}"></p>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    let driveId = /*[[${driveId}]]*/ null;
+
+    document.addEventListener('DOMContentLoaded', function() {
+        checkAndInitProgressTracker(driveId);
+    });
+
+    document.addEventListener('visibilitychange', function() {
+        if (!document.hidden) {
+            checkAndInitProgressTracker();
+        }
+    });
+</script>

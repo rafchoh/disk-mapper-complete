@@ -1,0 +1,54 @@
+<div th:replace="~{fragments/header}" xmlns:th="http://www.w3.org/1999/xhtml"></div>
+<main class="main-content">
+<section class="main-section">
+    <div class="center-crop txt-center col-10">
+        <h4 th:text="${page_name}" style="margin-bottom: 3px;"></h4>
+        <div class="deviceName" style="padding: 5px 0;">
+            <hr>
+            <div class="card w-100 border shadow-sm">
+                <div class="card-body p-2">
+                    <div class="pc-info" style="display: flex; justify-content: center;">
+                        <table style="margin: 0;" sec:authorize="isAuthenticated()">
+                            <tr>
+                                <td rowspan="2" style="padding-right: 3px;"><h5>Current PC: </h5></td>
+                                <td style="border-bottom: 1px solid #ddd;"><span th:text="${pc_name}"></span></td>
+                            </tr>
+                            <tr>
+                                <td><span th:text="${pc_model}"></span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <pre class="txt-center" style="color: red; font-size: 14px; font-weight: bold;" th:text="${message}"></pre>
+        <form th:action="@{/device/create}" method="post" th:object="${pc_creator}">
+            <div class="row">
+                <div class="col-12" style="text-align: center;">
+                    <label>Name your PC: </label>
+                    <input type="text" id="pcNameField" class="input" th:field="*{pcName}" onclick="loadValue();">
+                    <br>
+                    <label>PC Info: </label>
+                    <input type="text" th:field="*{pcInfo}" class="input">
+                    <br>
+                </div>
+                <div class="txt-center col-12 mt-4">
+                    <input type="submit" value="Create PC">
+                </div>
+            </div>
+        </form>
+
+    </div>
+</section>
+
+<script th:inline="javascript">
+    function loadValue() {
+        var pcName = /*[[${pc_name}]]*/;
+        document.getElementById('pcNameField').value = pcName;
+
+        $('#pcNameField').trigger('keyup');
+    }
+</script>
+</main>
+<div th:replace="~{fragments/footer}"></div>
