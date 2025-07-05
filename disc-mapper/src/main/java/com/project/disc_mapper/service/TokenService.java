@@ -2,6 +2,7 @@ package com.project.disc_mapper.service;
 
 import com.project.disc_mapper.dto.entity.ResetTokens;
 import com.project.disc_mapper.repo.TokenRepo;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,6 +10,7 @@ import java.security.SecureRandom;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class TokenService {
 
     private final SecureRandom secureRandom = new SecureRandom();
@@ -28,7 +30,7 @@ public class TokenService {
         return tokenRepo.findByUserId(userId);
     }
 
-    public boolean deleteIfExpired(Long userId, int validitySeconds) {
+    public boolean deleteIfIsExpired(Long userId, int validitySeconds) {
         return tokenRepo.findByUserId(userId)
                 .filter(e -> !mss.isValidToken(e.getCreatedAt(), validitySeconds))
                 .map(e -> {

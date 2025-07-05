@@ -155,8 +155,8 @@ public class UserController {
         } else {
             ResetTokens existingToken = tokenService.getRecoveryByUserId(currentUser.getId());
 
-            boolean tokenAlive = existingToken != null &&
-                    tokenService.existsValid(currentUser.getId(), AUTH_KEY_ACTIVE_SECONDS);
+            boolean tokenAlive = existingToken.getUser() != null &&
+                    !tokenService.deleteIfIsExpired(currentUser.getId(), AUTH_KEY_ACTIVE_SECONDS);
             if (!tokenAlive) {
                 long start = System.currentTimeMillis();
 
@@ -212,7 +212,7 @@ public class UserController {
 
             model.addAttribute("timerInitial", remains);
             if (!mailSenderService.isValidToken(e.getCreatedAt(), AUTH_KEY_ACTIVE_SECONDS)) {
-                tokenService.deleteIfExpired(currentUser.getId(), AUTH_KEY_ACTIVE_SECONDS);
+                tokenService.deleteIfIsExpired(currentUser.getId(), AUTH_KEY_ACTIVE_SECONDS);
             }
         });
 
@@ -239,7 +239,7 @@ public class UserController {
             regInfo += "   • Validation Key has expired! ";
             error = true;
 
-            tokenService.deleteIfExpired(currentUser.getId(), AUTH_KEY_ACTIVE_SECONDS);
+            tokenService.deleteIfIsExpired(currentUser.getId(), AUTH_KEY_ACTIVE_SECONDS);
         }
 
         if (!currentResToken.getToken().equals(prt.getToken())) {
@@ -261,7 +261,6 @@ public class UserController {
             currentUser.setRecoveryMode(true);
             userRepo.save(currentUser);
 
-            tokenService.deleteIfExpired(currentUser.getId(), AUTH_KEY_ACTIVE_SECONDS);
             return "redirect:/user/profile/" + username + "/pass-edit";
         }
     }
@@ -321,7 +320,8 @@ public class UserController {
 
     @GetMapping("/profile/{username}/pass-edit")
     public String userPasswordEdit(@PathVariable String username,
-                                   Model model) {
+                                   Model model,
+                                   HttpSession session) {
 
         Users currentUser = userService.findByUsername(username);
 
@@ -331,7 +331,7 @@ public class UserController {
             long remains = mailSenderService.getRemainingSeconds(currentPrt.getCreatedAt(), AUTH_KEY_ACTIVE_SECONDS);
             model.addAttribute("timerInitial", remains);
         } else {
-            tokenService.deleteIfExpired(currentUser.getId(), AUTH_KEY_ACTIVE_SECONDS);
+            tokenService.deleteIfIsExpired(currentUser.getId(), AUTH_KEY_ACTIVE_SECONDS);
         }
 
 
@@ -342,6 +342,8 @@ public class UserController {
 
             currentUser.setRecoveryMode(false);
             userRepo.save(currentUser);
+
+            session.setAttribute("inRecovery", true);
         } else {
             model.addAttribute("page_name", "Change Password");
 
@@ -364,11 +366,15 @@ public class UserController {
     @PostMapping("/profile/{username}/pass-update")
     public String passUpdateUser(@ModelAttribute("objPassUser") Users user,
                                  @PathVariable String username,
-                                 RedirectAttributes redirectA) {
+                                 RedirectAttributes redirectA,
+                                 HttpSession session) {
 
         Users currentUser = userService.findByUsername(username);
 
-        if (!currentUser.isRecoveryMode()) {
+        boolean sessionReco = session.getAttribute("inRecovery") != null &&
+                                    (boolean) session.getAttribute("inRecovery");
+
+        if (!sessionReco) {
             if (userService.isUserLoggedIn()) {
                 if (user.getNewPassword().equals(user.getReTypePassword())) {
                     if (passwordEncoder.matches(user.getNewPassword(), currentUser.getPassword())) {
@@ -394,13 +400,13 @@ public class UserController {
         } else {
             if (user.getNewPassword().equals(user.getReTypePassword())) {
                 currentUser.setPassword(passwordEncoder.encode(user.getNewPassword()));
-                currentUser.setRecoveryMode(false);
+                userRepo.save(currentUser);
+
+                session.removeAttribute("inRecovery");
             } else {
                 redirectA.addFlashAttribute("message", "Your passwords doesn't match!");
                 return "redirect:/user/profile/" + username + "/pass-edit";
             }
-
-            userRepo.save(currentUser);
             redirectA.addFlashAttribute("message", "Your Password is changed successfully!");
 
             return "redirect:/user/login";

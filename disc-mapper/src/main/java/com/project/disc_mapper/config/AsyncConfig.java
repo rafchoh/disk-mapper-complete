@@ -30,9 +30,9 @@ public class AsyncConfig {
 
         ThreadPoolTaskExecutor tExecutor = new ThreadPoolTaskExecutor();
 
-        tExecutor.setCorePoolSize(8);
-        tExecutor.setMaxPoolSize(16);
-        tExecutor.setQueueCapacity(1000);
+        tExecutor.setCorePoolSize(6);
+        tExecutor.setMaxPoolSize(10);
+        tExecutor.setQueueCapacity(100);
         tExecutor.setThreadNamePrefix("AsyncImport-");
 
         tExecutor.setAllowCoreThreadTimeOut(true);

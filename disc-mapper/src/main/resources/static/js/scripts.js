@@ -402,15 +402,15 @@ function initProgressTracker(driveId) {
 
 //                if (mapBtn) mapBtn.disabled = false;
 
+                if (currentEventSource) {
+                    currentEventSource.close();
+                    currentEventSource = null;
+                }
+
                 if (window.location.pathname === '/drive/' + driveId) {
                     setTimeout( () => {
                         location.reload();
                     }, 500);
-                }
-
-                if (currentEventSource) {
-                    currentEventSource.close();
-                    currentEventSource = null;
                 }
 
                 setTimeout(() => {
