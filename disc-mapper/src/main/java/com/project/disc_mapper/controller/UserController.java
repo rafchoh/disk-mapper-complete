@@ -114,14 +114,14 @@ public class UserController {
         return "redirect:/user/login";
     }
 
-    @GetMapping("/login/checkUsername")
+        @GetMapping("/login/checkUsername")
         @ResponseBody
         ResponseEntity<Map<String, Boolean>> checkUsername(@RequestParam("username") String username) {
             boolean exists = userRepo.existsByUsername(username.trim());
             Map<String, Boolean> response = Collections.singletonMap("exists", exists);
 
             return ResponseEntity.ok(response);
-    }
+        }
 
     @PostMapping("/recovery")
     public String recoverPassword(@ModelAttribute("resetToken") ResetTokens prt,
