@@ -15,9 +15,6 @@ public class ServerCache {
     @Autowired
     private ClientService cs;
 
-    @Autowired
-    private KeyGenerator keygen;
-
 
     private final Map<Long, SearchResponseDTO> cache = new ConcurrentHashMap<>();
 
