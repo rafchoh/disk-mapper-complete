@@ -157,6 +157,7 @@ public class UserController {
 
             boolean tokenAlive = existingToken.getUser() != null &&
                     !tokenService.deleteIfIsExpired(currentUser.getId(), AUTH_KEY_ACTIVE_SECONDS);
+
             if (!tokenAlive) {
                 long start = System.currentTimeMillis();
 
